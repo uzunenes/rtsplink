@@ -1,0 +1,10 @@
+0.0.1
+
+The FIRST line of this file should contain ONLY the current version number.
+There should be no prior comments etc.
+
+Version change information is in the Changelog file.
+
+Version numbers must be in a.b.c format and the initial version of an application must be 0.1.
+The usual upgrades should progress from 0.1.X last digit.
+For fundamental changes, the middle number should be advanced.
