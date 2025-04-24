@@ -50,25 +50,25 @@ static cv::Mat *capture_c(cv::VideoCapture *opencv_videoCapture_ptr, double *ima
 
         if (image_matris_ptr == nullptr)
         {
-            printf("Kamera goruntu okuma hatasi, matris nullptr.");
+            printf("Camera image reading error, matrix is nullptr. \n");
             return nullptr;
         }
 
         if (image_matris_ptr->cols <= 0 || image_matris_ptr->rows <= 0)
         {
-            printf("Kamera goruntu okuma hatasi, goruntu genislik: [%d] - yukseklik: [%d]", image_matris_ptr->cols, image_matris_ptr->rows);
+            printf("Camera image reading error, image width: [%d] - height: [%d] \n", image_matris_ptr->cols, image_matris_ptr->rows);
             return nullptr;
         }
 
         if (image_matris_ptr->empty() == true)
         {
-            printf("Kamera goruntu okuma hatasi, matris bos.");
+            printf("Camera image reading error, matrix is empty. \n");
             return nullptr;
         }
     }
     catch (cv::Exception &e)
     {
-        printf("Kamera goruntu okuma hatasi: [%s]", e.what());
+        printf("Camera image reading error: [%s] \n", e.what());
         return nullptr;
     }
 
@@ -87,29 +87,29 @@ static int open_camera(cv::VideoCapture **opencv_videoCapture_ptr, const char *u
 
         if (backend_lib_flag == e_rtsplink_rtsp_backend_lib_FFMPEG)
         {
-            printf("Kamera aciliyor, [%s], backend_lib: FFMPEG.", url);
+            printf("Opening camera, [%s], backend_lib: FFMPEG. \n", url);
             setenv("OPENCV_FFMPEG_CAPTURE_OPTIONS", "rtsp_transport;tcp", 1);
             (*opencv_videoCapture_ptr)->open(url, cv::CAP_FFMPEG);
         }
         else
         {
-            printf("Kamera aciliyor, [%s], backend_lib: GSTREAMER.", url);
+            printf("Opening camera, [%s], backend_lib: GSTREAMER. \n", url);
             (*opencv_videoCapture_ptr)->open(url, cv::CAP_GSTREAMER);
         }
 
         if ((*opencv_videoCapture_ptr)->isOpened() == false)
         {
-            printf("Kamera acilamadi: [%s]", url);
+            printf("Camera could not be opened: [%s] \n", url);
             return -1;
         }
 
         g_camera_struct_ptr->fps = (*opencv_videoCapture_ptr)->get(cv::CAP_PROP_FPS);
 
-        printf("Kamera acildi: [%s], fps: [%d], w: [%d], h: [%d]", url, g_camera_struct_ptr->fps, (*opencv_videoCapture_ptr)->get(cv::CAP_PROP_FRAME_WIDTH), (*opencv_videoCapture_ptr)->get(cv::CAP_PROP_FRAME_HEIGHT));
+        printf("Camera opened: [%s], fps: [%d], w: [%d], h: [%d] \n", url, g_camera_struct_ptr->fps, (*opencv_videoCapture_ptr)->get(cv::CAP_PROP_FRAME_WIDTH), (*opencv_videoCapture_ptr)->get(cv::CAP_PROP_FRAME_HEIGHT));
     }
     catch (...)
     {
-        printf("Kamera acilamadi: [%s]", url);
+        printf("Camera could not be opened: [%s] \n", url);
         return -2;
     }
 
@@ -118,15 +118,15 @@ static int open_camera(cv::VideoCapture **opencv_videoCapture_ptr, const char *u
 
 void rtsplink_release_and_close_ip_camera(void)
 {
-    printf("Releasing and closing camera connection...");
+    printf("Releasing and closing camera connection... \n");
 
     g_thread_exit_signal = 1;
     sleep_milisec(100);
 
     pthread_cancel(g_camera_struct_ptr->connection_control_queue_id);
-    printf("Thread canceled! Waiting thread release...");
+    printf("Thread canceled! Waiting thread release... \n");
     pthread_join(g_camera_struct_ptr->connection_control_queue_id, NULL);
-    printf("Thread released!");
+    printf("Thread released! \n");
 
     if (g_camera_struct_ptr->camera_connection_status_flag != e_rtsplink_ip_camera_connection_status_no_connection && g_camera_struct_ptr->opencv_videoCapture_ptr != nullptr)
     {
@@ -134,7 +134,7 @@ void rtsplink_release_and_close_ip_camera(void)
         delete g_camera_struct_ptr->opencv_videoCapture_ptr;
         g_camera_struct_ptr->opencv_videoCapture_ptr = nullptr;
     }
-    printf("Video capture released!");
+    printf("Video capture released! \n");
 
     free(g_camera_struct_ptr);
     g_camera_struct_ptr = nullptr;
@@ -152,7 +152,7 @@ void rtsplink_release_and_close_ip_camera(void)
         break;
     }
 
-    printf("Released and closed camera connection.");
+    printf("Released and closed camera connection. \n");
 }
 
 static void write_image_global_area_and_free(cv::Mat *last_image_ptr, double last_image_read_time)
@@ -196,7 +196,7 @@ static void *camera_connection_status_function(void *giris_bilgileri_isr)
     {
         if (g_thread_exit_signal == 1)
         {
-            printf("Akis fonk. cikis sinyali geldi, bye:)");
+            printf("Stream function exit signal received, bye :) \n");
             break;
         }
 
@@ -205,7 +205,7 @@ static void *camera_connection_status_function(void *giris_bilgileri_isr)
             if (open_camera(&g_camera_struct_ptr->opencv_videoCapture_ptr, g_camera_struct_ptr->camera_connection_information_struct.url, g_camera_struct_ptr->backend_lib_flag) != 0)
             {
                 ++camera_connection_attempt_count;
-                printf("Kamera acilamadi, deneme sayaci: [%ld].", camera_connection_attempt_count);
+                printf("Camera could not be opened, attempt counter: [%ld]. \n", camera_connection_attempt_count);
                 sleep_milisec(1000);
                 continue;
             }
@@ -222,7 +222,7 @@ static void *camera_connection_status_function(void *giris_bilgileri_isr)
             if (last_image_ptr == nullptr)
             {
                 ++image_read_attempt_count;
-                printf("Goruntu okunamadi, deneme sayaci: [%ld].", image_read_attempt_count);
+                printf("Image could not be read, attempt counter: [%ld]. \n", image_read_attempt_count);
                 sleep_milisec(100);
                 continue;
             }
@@ -295,7 +295,7 @@ int rtsplink_connect_and_follow_ip_camera_connection_background(const char *came
         }
         else
         {
-            printf(": Username and pass must be [nullptr] or some value.");
+            printf(": Username and pass must be [nullptr] or some value. \n");
             return -1;
         }
     }
@@ -338,7 +338,7 @@ int rtsplink_connect_and_follow_ip_camera_connection_background(const char *came
     result = pthread_create(&g_camera_struct_ptr->connection_control_queue_id, nullptr, camera_connection_status_function, nullptr);
     if (result != 0)
     {
-        printf(": Thread olusturulamadi!");
+        printf("Thread could not be created! \n");
         return -2;
     }
 
@@ -362,7 +362,7 @@ cv::Mat *rtsplink_get_image_from_ip_camera(double *image_read_time, int timeout_
         if (elapsed_time_milisec > timeout_restart_camera_connection_milisec)
         {
             g_mutex_rtsplink_ip_camera.unlock();
-            printf("Timeout reached! Total elapsed milisec: [%1.f], timeout_milisec: [%d].", elapsed_time_milisec, timeout_restart_camera_connection_milisec);
+            printf("Timeout reached! Total elapsed milisec: [%1.f], timeout_milisec: [%d]. \n", elapsed_time_milisec, timeout_restart_camera_connection_milisec);
             *err_code = -2;
             return nullptr;
         }
@@ -372,7 +372,7 @@ cv::Mat *rtsplink_get_image_from_ip_camera(double *image_read_time, int timeout_
     if (queue_len <= 0)
     {
         g_mutex_rtsplink_ip_camera.unlock();
-        printf("Global image not ready, first image waiting..");
+        printf("Global image not ready, first image waiting.. \n");
         *err_code = -1;
         return nullptr;
     }
