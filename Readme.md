@@ -18,7 +18,7 @@ librtsplink is a high-performance C++ library for low-latency RTSP streaming fro
 2.  **Clone the Repository:**
 
     ```bash
-    git clone [https://github.com/uzunenes/librtsplink.git](https://github.com/uzunenes/librtsplink.git)
+    git clone https://github.com/uzunenes/rtsplink.git
     cd librtsplink
     ```
 
