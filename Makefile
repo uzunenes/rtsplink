@@ -11,7 +11,7 @@ SRC_DIR := src
 INC_DIR := include
 
 # Object files
-OBJS := librtsplink.o librtsplink_utility_functions.o
+OBJS := librtsplink.o
 
 # Lib name
 TARGET := librtsplink.so
@@ -27,9 +27,6 @@ $(TARGET): $(OBJS)
 	strip --strip-unneeded $@
 
 librtsplink.o: $(SRC_DIR)/librtsplink.cpp $(INC_DIR)/librtsplink.h
-	$(CXX) $(CXXFLAGS) $(PKG_FLAGS) -c $< -o $@
-
-librtsplink_utility_functions.o: $(SRC_DIR)/librtsplink_utility_functions.cpp $(INC_DIR)/librtsplink_utility_functions.h
 	$(CXX) $(CXXFLAGS) $(PKG_FLAGS) -c $< -o $@
 
 install:
