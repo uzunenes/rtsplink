@@ -28,6 +28,13 @@ librtsplink is a high-performance C++ library for low-latency RTSP streaming fro
     make
     sudo make install  # or specify a local installation directory
     ```
+    
+3.  **Example:**
+
+    ```bash
+    make
+    ./camera_example # edit file IP and user pass
+    ```
 
 ## Acknowledgements 
 I would like to thank my teammates for their valuable support during this work.
