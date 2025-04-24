@@ -1,14 +1,10 @@
 #ifndef LIBRTSPLINK_H
 #define LIBRTSPLINK_H
 
-
 #include <opencv2/videoio/videoio.hpp>
 
-
 #define struct_camera_connection_information_default (struct struct_camera_connection_information) {{0}, -1, {0}, {0}, {0}, {0} }
-
 #define struct_camera_default (struct struct_camera) { nullptr, e_rtsplink_ip_camera_connection_status_no_connection, e_rtsplink_rtsp_backend_lib_GSTREAMER, 0, struct_camera_connection_information_default, -1}
-
 
 enum _enum_rtsplink_ip_camera_connection_status
 {
