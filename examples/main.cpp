@@ -73,9 +73,9 @@ void image_write_text(cv::Mat *image_ptr, const char *text_ptr, int x, int y, do
 
 int main()
 {
-    const char* camera_ip = "10.14.37.119";
-    const char* camera_username = "iot";
-    const char* camera_password = "iOt*01042021";  
+    const char* camera_ip = "10.E.N.S";
+    const char* camera_username = "***";
+    const char* camera_password = "*****";  
 
     int port = 554;
     const char *mount_point = nullptr;
