@@ -7,6 +7,7 @@
 #include <queue>
 #include <sys/time.h>
 #include <unistd.h>
+
 // global variables
 const char *g_default_gst_pipeline = "protocols=tcp latency=50 ! application/x-rtp, media=(string)video ! decodebin ! videoconvert ! appsink max-buffers=2 drop=True sync=true";
 static struct struct_camera *g_camera_struct_ptr = nullptr;
